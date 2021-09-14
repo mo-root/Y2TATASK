@@ -22,25 +22,22 @@ def fullList1():
 
 
 
-@app.route('/list.html/<int:p_id>')
-def order(p_id):
-    order=session.query(Item).filter_by(id=p_id).one()
-    return render_template('list.html',Item=Item)
-
-
-
 @app.route('/' , methods=['GET','POST'])
 def upload():
 	if request.method == 'GET' :
 		return render_template('Home.html')
 
 	else:
+		
+
 		print("creating object")
 		name = request.form['name']
 		email = request.form['email']
 		comment = request.form['comment']
 		link = request.form['link']
 		date = request.form['date']
+		add_item(name , email , comment, date , link)
+
 		feedback = TextBlob(comment).polarity
 		if feedback > 0:
 			with smtplib.SMTP('smtp.gmail.com',587) as smtp:
@@ -70,9 +67,6 @@ def upload():
 				smtp.sendmail('','facial.recognition.feedback@gmail.com',msg1)
 				smtp.sendmail('',email,msg)
 				return render_template("About.html")
-
-		add_item(name , email , comment, date , link)
-		return redirect('About.html')
 
 
 if __name__ == '__main__':
